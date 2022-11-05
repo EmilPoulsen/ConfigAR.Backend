@@ -26,6 +26,7 @@ namespace ConfigAR.Backend.Controllers
         [HttpGet(Name = "")]
         public async Task<string> Get()
         {
+            await this.configurateService.Execute();
             return "hello";
         }
     }
