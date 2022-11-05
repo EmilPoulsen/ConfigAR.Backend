@@ -1,3 +1,4 @@
+using ConfigAR.Backend.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ConfigAR.Backend.Controllers
@@ -12,22 +13,20 @@ namespace ConfigAR.Backend.Controllers
     };
 
         private readonly ILogger<WeatherForecastController> _logger;
+        private readonly IConfigurateService configurateService;
 
-        public ConfigurateController(ILogger<WeatherForecastController> logger)
+        public ConfigurateController(
+            ILogger<WeatherForecastController> logger,
+            IConfigurateService configurateService)
         {
             _logger = logger;
+            this.configurateService = configurateService;
         }
 
-        [HttpGet(Name = "GetWeatherForecast")]
-        public IEnumerable<WeatherForecast> Get()
+        [HttpGet(Name = "")]
+        public async Task<string> Get()
         {
-            return Enumerable.Range(1, 5).Select(index => new WeatherForecast
-            {
-                Date = DateTime.Now.AddDays(index),
-                TemperatureC = Random.Shared.Next(-20, 55),
-                Summary = Summaries[Random.Shared.Next(Summaries.Length)]
-            })
-            .ToArray();
+            return "hello";
         }
     }
 }
