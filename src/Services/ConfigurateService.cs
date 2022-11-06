@@ -6,7 +6,7 @@ using ShapeDiver.SDK.Authentication;
 using ShapeDiver.SDK.PlatformBackend;
 using ShapeDiver.SDK.PlatformBackend.DTO;
 using ShapeDiver.SDK.GeometryBackend;
-
+using ConfigAR.Backend.Models;
 
 namespace ConfigAR.Backend.Services
 {
@@ -42,10 +42,12 @@ namespace ConfigAR.Backend.Services
         }
 
 
-        public async Task<Stream> Execute(string modelId)
+        public async Task<Stream> Execute(ConfigarInput input)
         {
             try
             {
+                string modelId = input.Model;
+
                 if(!_sdk.AuthenticationClient.IsAuthenticated)
                 {
                     await _sdk.AuthenticationClient.Authenticate(_keyId, _keySecret);
@@ -64,6 +66,11 @@ namespace ConfigAR.Backend.Services
 
                 // computation request
                 var paramValues = new Dictionary<string, string>();
+
+                string points = input.GetPointString();
+                //string points = "{\"points\":[[1,0,0],[0.5,0,0],[1.5,1,0],[-0.5,1.5,0]]}";
+                paramValues.Add("de401644-53b9-4414-a042-6463f35892e2", points);
+
                 // TODO: add pairs of parameter id and string value for any parameter that you want to set
                 var computeResult = await _sdk.GeometryBackendClient.ComputeOutputs(context, paramValues);
                 var glbAsset = _sdk.GeometryBackendClient.GetAllOutputAssetsForFormat(context, computeResult, "glb").FirstOrDefault();
