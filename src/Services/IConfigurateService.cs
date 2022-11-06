@@ -12,6 +12,6 @@ namespace ConfigAR.Backend.Services
 {
     public interface IConfigurateService
     {
-        Task Execute();
+        Task<Stream> Execute(string modelId);
     }
 }

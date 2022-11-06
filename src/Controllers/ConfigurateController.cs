@@ -1,5 +1,6 @@
 using ConfigAR.Backend.Services;
 using Microsoft.AspNetCore.Mvc;
+using System.Net.Http.Headers;
 
 namespace ConfigAR.Backend.Controllers
 {
@@ -17,17 +18,23 @@ namespace ConfigAR.Backend.Controllers
 
         public ConfigurateController(
             ILogger<WeatherForecastController> logger,
-            IConfigurateService configurateService)
+            IConfigurateService configurateService,
+            IWebHostEnvironment webHostEnvironment)
         {
             _logger = logger;
             this.configurateService = configurateService;
         }
 
         [HttpGet(Name = "")]
-        public async Task<string> Get()
+        public async Task<FileStreamResult> Get()
         {
-            await this.configurateService.Execute();
-            return "hello";
+            string modelId = "shapemakersample-5";
+            Stream glb = await this.configurateService.Execute(modelId);
+
+            return new FileStreamResult(glb, new Microsoft.Net.Http.Headers.MediaTypeHeaderValue("application/octet-stream"))
+            {
+                FileDownloadName = "test.glb"
+            };
         }
     }
 }
