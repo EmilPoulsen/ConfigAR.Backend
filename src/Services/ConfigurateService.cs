@@ -64,12 +64,17 @@ namespace ConfigAR.Backend.Services
                 IGeometryBackendContext context = _modelIdCtxMap[modelId];
                 // get parameters of latest model
 
+                string parameterId = context.ModelData.Parameters
+                    .Where(kvp => kvp.Value.Name.ToLower() == "polylinejson")
+                    .Select(kvp => kvp.Key)
+                    .FirstOrDefault();
+
                 // computation request
                 var paramValues = new Dictionary<string, string>();
 
                 string points = input.GetPointString();
                 //string points = "{\"points\":[[1,0,0],[0.5,0,0],[1.5,1,0],[-0.5,1.5,0]]}";
-                paramValues.Add("de401644-53b9-4414-a042-6463f35892e2", points);
+                paramValues.Add(parameterId, points);
 
                 // TODO: add pairs of parameter id and string value for any parameter that you want to set
                 var computeResult = await _sdk.GeometryBackendClient.ComputeOutputs(context, paramValues);
